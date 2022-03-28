@@ -32,6 +32,7 @@ jobs:
       id: changed-files-specific
       uses: tj-actions/changed-files@v18.4
       with:
+          fetch-depth: 2
           files: |
             *.sql
           files_ignore: |
