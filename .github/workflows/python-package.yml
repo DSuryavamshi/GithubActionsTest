@@ -19,7 +19,7 @@ jobs:
 
     steps:
     - name: code checkout
-    - uses: actions/checkout@v2.1.0
+      uses: actions/checkout@v2.1.0
       with:
         fetch-depth: 0
     - name: Set up Python ${{ matrix.python-version }}
@@ -33,7 +33,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Running python scripts
     - id: files
-    - uses: jitterbit/get-changed-files@v1
+      uses: jitterbit/get-changed-files@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
     - run: |
