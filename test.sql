@@ -1,4 +1,5 @@
 create or replace schema.table(
   co11 varchar,
-  col2 timestamp
+  col2 timestamp,
+  col3 date
  )
