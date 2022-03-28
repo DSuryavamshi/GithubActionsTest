@@ -29,18 +29,10 @@ jobs:
         python -m pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Get specific changed files
-      id: changed-files-specific
-      uses: tj-actions/changed-files@v18.4
+      uses: jitterbit/get-changed-files@v1
       with:
-          files: |
-            *.sql
-          files_ignore: |
-            *.yml
-            *.py
-    - name: Run step if any of the listed files above is deleted
-      if: steps.changed-files-specific.outputs.any_changed == 'true'
-      run: |
-        for file in ${{ steps.changed-files-specific.outputs.any_changed }}; do
-          echo "$file was changed"
-          python snowflake.py $file
-        done
+        format: space-delimited
+        token: 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
+        run: |
+          echo "All:"
+          echo "${{ steps.abc.outputs.all }}"
