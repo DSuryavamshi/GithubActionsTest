@@ -11,7 +11,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -29,8 +28,9 @@ jobs:
         python -m pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Running python scripts
+    - uses: actions/checkout@v2.1.0
+    - uses: jitterbit/get-changed-files@v1
       id: files
-      uses: jitterbit/get-changed-files@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         run: |
