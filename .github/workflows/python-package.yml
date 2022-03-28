@@ -5,7 +5,7 @@ on:
     branches: [ dev ]
  
 jobs:
-  automatic-sql-optimization:
+  snowflake-deployment:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
