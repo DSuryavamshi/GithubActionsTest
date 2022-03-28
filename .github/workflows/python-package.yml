@@ -21,12 +21,12 @@ jobs:
     - name: Running python scripts
     - id: files
     - uses: actions/setup-python@v2
-      uses: actions/checkout@v2.1.0
+    - uses: actions/checkout@v2.1.0
+    - uses: jitterbit/get-changed-files@v1
       with:
-        fetch-depth: 0
-      uses: jitterbit/get-changed-files@v1
-      with:
+        format: space-delimited
         token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
     - run: |
         for changed_file in ${{ steps.files.outputs.all }}; do
           echo "Do something with this ${changed_file}."
