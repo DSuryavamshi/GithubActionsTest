@@ -12,17 +12,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.8"]
-
     steps:    
     - name: Running python scripts
     - id: files
-    - uses: actions/setup-python@v2
     - uses: actions/checkout@v2.1.0
-      uses: jitterbit/get-changed-files@v1
+    - uses: jitterbit/get-changed-files@v1
       with:
         format: space-delimited
         token: ${{ secrets.GITHUB_TOKEN }}
