@@ -18,6 +18,10 @@ jobs:
         python-version: ["3.8"]
 
     steps:
+    - name: code checkout
+    - uses: actions/checkout@v2.1.0
+      with:
+        fetch-depth: 0
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -27,15 +31,11 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
     - name: Running python scripts
     - id: files
     - uses: jitterbit/get-changed-files@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-    - uses: actions/checkout@v2.1.0
-      with:
-        fetch-depth: 0
     - run: |
         for changed_file in ${{ steps.files.outputs.all }}; do
           echo "Do something with this ${changed_file}."
