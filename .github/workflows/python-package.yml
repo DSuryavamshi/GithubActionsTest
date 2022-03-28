@@ -27,7 +27,7 @@ jobs:
         format: space-delimited
         token: ${{ secrets.GITHUB_TOKEN }}
         fetch-depth: 0
-    - run: |
+      run: |
         for changed_file in ${{ steps.files.outputs.all }}; do
           echo "Do something with this ${changed_file}."
           python snowflake.py ${changed_file}
