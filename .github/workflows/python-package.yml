@@ -13,12 +13,9 @@ jobs:
         python-version: ["3.8"]
 
     steps:
-      - uses: actions/checkout@v2.1.0
-      - uses: jitterbit/get-changed-files@v1
-      - uses: actions/setup-python@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
         with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
@@ -26,8 +23,11 @@ jobs:
           python -m pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Running python scripts
-        id: files
-        run: |
+      - id: files
+        uses: jitterbit/get-changed-files@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
           for changed_file in ${{ steps.files.outputs.all }}; do
             echo "Do something with this ${changed_file}."
             python snowflake.py ${changed_file}
