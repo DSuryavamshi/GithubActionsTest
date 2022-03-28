@@ -28,11 +28,13 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Get specific changed files
+    - name: Running python scripts
+    - id: files
       uses: jitterbit/get-changed-files@v1
       with:
-        format: space-delimited
         token: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "All:"
-          echo "${{ steps.abc.outputs.all }}"
+    - run: |
+        for changed_file in ${{ steps.files.outputs.all }}; do
+          echo "Do something with this ${changed_file}."
+          python snowflake.py ${changed_file}
+        done
