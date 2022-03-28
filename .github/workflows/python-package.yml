@@ -1,4 +1,4 @@
-name: EverSQL
+name: SnowflakeDeployment
  
 on:
   push:
@@ -16,7 +16,5 @@ jobs:
     - name: Deploying Snowflake objects
       run: |
         for changed_file in ${{ steps.files.outputs.all }}; do
-          echo "#####  Optimizing file: ${changed_file}  #####:"
-          ls -lrt
           python snowflake.py ${changed_file}
         done
