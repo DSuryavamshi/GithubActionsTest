@@ -13,7 +13,7 @@ jobs:
     - name: Get changed files
       id: files
       uses: jitterbit/get-changed-files@v1
-    - name: Optimize SQL queries
+    - name: Deploying Snowflake objects
       run: |
         for changed_file in ${{ steps.files.outputs.all }}; do
           echo "#####  Optimizing file: ${changed_file}  #####:"
