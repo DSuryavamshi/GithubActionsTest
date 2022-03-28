@@ -1,31 +1,22 @@
-name: Test
-
-on: push
-
+name: EverSQL
+ 
+on:
+  push:
+    branches: [ dev ]
+ 
 jobs:
-  test:
+  automatic-sql-optimization:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.1.0
-      - uses: jitterbit/get-changed-files@v1
-        id: abc
-        with:
-          format: space-delimited
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Printing
-        run: |
-          for changed_file in ${{ steps.files.outputs.all }}; do
-            echo "Do something with this ${changed_file}."
-          done
-          echo "All:"
-          echo "${{ steps.abc.outputs.all }}"
-          echo "Added:"
-          echo "${{ steps.abc.outputs.added }}"
-          echo "Removed:"
-          echo "${{ steps.abc.outputs.removed }}"
-          echo "Renamed:"
-          echo "${{ steps.abc.outputs.renamed }}"
-          echo "Modified:"
-          echo "${{ steps.abc.outputs.modified }}"
-          echo "Added+Modified:"
-          echo "${{ steps.abc.outputs.added_modified }}"
+    - name: Checkout repository
+      uses: actions/checkout@v1
+    - name: Get changed files
+      id: files
+      uses: jitterbit/get-changed-files@v1
+    - name: Optimize SQL queries
+      run: |
+        for changed_file in ${{ steps.files.outputs.all }}; do
+          echo "#####  Optimizing file: ${changed_file}  #####:"
+          ls -lrt
+          python snowflake.py ${changed_file}
+        done
