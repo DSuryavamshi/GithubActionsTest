@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.8"]
 
     steps:
     - name: Set up Python ${{ matrix.python-version }}
@@ -29,19 +29,10 @@ jobs:
         python -m pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Get specific changed files
-      id: changed-files-specific
-      uses: tj-actions/changed-files@v18.4
+      uses: jitterbit/get-changed-files@v1
       with:
-          fetch-depth: 2
-          files: |
-            *.sql
-          files_ignore: |
-            *.yml
-            *.py
-    - name: Run step if any of the listed files above is deleted
-      if: steps.changed-files.outputs.any_deleted == 'true'
-      run: |
-        for file in ${{ steps.changed-files.outputs.any_changed }}; do
-          echo "$file was changed"
-          python snowflake.py $file
-        done
+        format: space-delimited
+        token: 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
+        run: |
+          echo "All:"
+          echo "${{ steps.abc.outputs.all }}"
