@@ -14,6 +14,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Printing
         run: |
+          for changed_file in ${{ steps.files.outputs.all }}; do
+            echo "Do something with this ${changed_file}."
+          done
           echo "All:"
           echo "${{ steps.abc.outputs.all }}"
           echo "Added:"
