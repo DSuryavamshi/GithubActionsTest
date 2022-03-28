@@ -7,3 +7,4 @@ with open(file_name, 'r') as f:
   query = f.readlines()
   
 print(query)
+print("working")

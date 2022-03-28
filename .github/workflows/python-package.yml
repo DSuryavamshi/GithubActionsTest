@@ -32,7 +32,7 @@ jobs:
       uses: jitterbit/get-changed-files@v1
       with:
         format: space-delimited
-        token: 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
+        token: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "All:"
           echo "${{ steps.abc.outputs.all }}"
