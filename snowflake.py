@@ -2,6 +2,7 @@ import sys
 
 file_name = sys.argv[1]
 branch = sys.argv[2]
+print(f"Branch name: {branch}")
 file_type = file_name.split('.')[1]
 if file_type.lower() in ['yml', 'py']:
   sys.exit(0)
