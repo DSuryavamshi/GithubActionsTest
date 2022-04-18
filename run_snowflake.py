@@ -11,7 +11,7 @@ def sf_connect(username, password, account, warehouse):
             account=account,
             warehouse=warehouse,
         )
-        return conn, conn.cursor
+        return conn, conn.cursor()
     except Exception as e:
         raise Exception(
             f"Exception occured whlie establishing connection to snowflake:\n{e}")
