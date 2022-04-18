@@ -81,12 +81,12 @@ if __name__ == "__main__":
             with open(file_name, "r") as f:
                 query = ''.join(line.rstrip() for line in f)
             query = query.replace("$env", branch_replacement[branch]).upper()
+            print(query)
             conn, cursor = sf_connect(
                 username=username, password=password, account=account, warehouse=warehouse)
             cursor.execute(query)
             for x in cursor.fetchall():
                 print(x)
-            print(query)
     except Exception as e:
         raise Exception(f"Exception occured while executing the query:\n{e}")
     finally:

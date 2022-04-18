@@ -3,3 +3,4 @@ create or replace $env_sandbox.dev_raw.table1(
   col2 timestamp,
   col3 timestamp
 )
+
