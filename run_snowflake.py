@@ -71,6 +71,8 @@ if __name__ == "__main__":
 
     branch_replacement = {"dev": "dev", "uat": "uat", "main": "prod"}
     file_type = file_name.split(".")[1]
+    conn, cursor = sf_connect(
+        username=username, password=password, account=account, warehouse=warehouse)
     try:
         if file_type.lower() in ["yml", "py"]:
             sys.exit(0)
@@ -82,8 +84,6 @@ if __name__ == "__main__":
                 query = ''.join(line.rstrip() for line in f)
             query = query.replace("$env", branch_replacement[branch]).upper()
             print(query)
-            conn, cursor = sf_connect(
-                username=username, password=password, account=account, warehouse=warehouse)
             cursor.execute(query)
             for x in cursor.fetchall():
                 print(x)
