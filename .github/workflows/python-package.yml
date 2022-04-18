@@ -27,5 +27,5 @@ jobs:
       - name: Deploying Snowflake objects
         run: |
           for changed_file in ${{ steps.files.outputs.all }}; do
-            python snowflake.py ${changed_file} ${{ steps.extract_branch.outputs.branch }} ${{ secrets.SF_USERNAME }} ${{ secrets.SF_PWD }} ${{ secrets.SF_ACCT }} ${{ secrets.SF_WAREHOUSE}} {{ github.actor }} {{ github.sha }}
+            python run_snowflake.py ${changed_file} ${{ steps.extract_branch.outputs.branch }} ${{ secrets.SF_USERNAME }} ${{ secrets.SF_PWD }} ${{ secrets.SF_ACCT }} ${{ secrets.SF_WAREHOUSE}} {{ github.actor }} {{ github.sha }}
           done
