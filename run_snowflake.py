@@ -50,24 +50,31 @@ def create_log_table(cursor):
 
 
 if __name__ == "__main__":
-    file_name = sys.argv[1]
-    branch = sys.argv[2]
-    username = sys.argv[3]
-    password = sys.argv[4]
-    account = sys.argv[5]
-    warehouse = sys.argv[6]
+    # file_name = sys.argv[1]
+    # branch = sys.argv[2]
+    # username = sys.argv[3]
+    # password = sys.argv[4]
+    # account = sys.argv[5]
+    # warehouse = sys.argv[6]
+    # actor = os.getenv('GITHUB_ACTOR')
+    # sha = os.getenv('GITHUB_SHA')
 
-    # actor = sys.argv[7]
-    # sha = sys.argv[8]
+    added = sys.argv[1]
+    removed = sys.argv[2]
+    modified = sys.argv[3]
 
-    print(file_name)
-    print(branch)
-    print(username)
-    print(password)
-    print(account)
-    print(warehouse)
-    print(os.getenv('GITHUB_ACTOR'))
-    print(os.getenv('GITHUB_SHA'))
+    print(added)
+    print(type(added))
+    print(removed)
+    print(type(removed))
+    print(modified)
+    print(type(modified))
+    # print(file_name)
+    # print(branch)
+    # print(username)
+    # print(password)
+    # print(account)
+    # print(warehouse)
 
     # branch_replacement = {"dev": "dev", "uat": "uat", "main": "prod"}
     # file_type = file_name.split(".")[1]
