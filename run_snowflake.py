@@ -1,5 +1,5 @@
 import sys
-
+import os
 import snowflake.connector as sf
 
 
@@ -57,8 +57,8 @@ if __name__ == "__main__":
     account = sys.argv[5]
     warehouse = sys.argv[6]
 
-    actor = sys.argv[7]
-    sha = sys.argv[8]
+    # actor = sys.argv[7]
+    # sha = sys.argv[8]
 
     print(file_name)
     print(branch)
@@ -66,8 +66,8 @@ if __name__ == "__main__":
     print(password)
     print(account)
     print(warehouse)
-    print(actor)
-    print(sha)
+    print(os.getenv('RUNNER_NAME'))
+    print(os.getenv('GITHUB_SHA'))
 
     # branch_replacement = {"dev": "dev", "uat": "uat", "main": "prod"}
     # file_type = file_name.split(".")[1]
