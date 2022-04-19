@@ -2,7 +2,7 @@ name: SnowflakeDeployment
 
 on:
   push:
-    branches: [main, uat, dev]
+    branches: [main, uat, dev, feature_branch]
 
 jobs:
   snowflake-deployment:
@@ -27,5 +27,5 @@ jobs:
       - name: Deploying Snowflake objects
         run: |
           for changed_file in ${{ steps.files.outputs.all }}; do
-            python run_snowflake.py ${changed_file} ${{ steps.extract_branch.outputs.branch }} ${{ secrets.SF_USERNAME }} ${{ secrets.SF_PWD }} ${{ secrets.SF_ACCT }} ${{ secrets.SF_WAREHOUSE}} {{ github.actor }} {{ github.sha }}
+            python run_snowflake.py ${changed_file} ${{ steps.extract_branch.outputs.branch }} ${{ secrets.SF_USERNAME }} ${{ secrets.SF_PWD }} ${{ secrets.SF_ACCT }} ${{ secrets.SF_WAREHOUSE}} ${{ RUNNER_NAME }} ${{ GITHUB_SHA }}
           done

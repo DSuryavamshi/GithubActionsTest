@@ -69,26 +69,26 @@ if __name__ == "__main__":
     print(actor)
     print(sha)
 
-    branch_replacement = {"dev": "dev", "uat": "uat", "main": "prod"}
-    file_type = file_name.split(".")[1]
-    conn, cursor = sf_connect(
-        username=username, password=password, account=account, warehouse=warehouse)
-    try:
-        if file_type.lower() in ["yml", "py"]:
-            sys.exit(0)
-        else:
-            print(f"Branch name: {branch}")
-            print(f"{file_name} has been changed")
-            query = ""
-            with open(file_name, "r") as f:
-                query = ''.join(line.rstrip() for line in f)
-            query = query.replace("$env", branch_replacement[branch]).upper()
-            print(query)
-            cursor.execute(query)
-            for x in cursor.fetchall():
-                print(x)
-    except Exception as e:
-        raise Exception(f"Exception occured while executing the query:\n{e}")
-    finally:
-        cursor.close()
-        conn.close()
+    # branch_replacement = {"dev": "dev", "uat": "uat", "main": "prod"}
+    # file_type = file_name.split(".")[1]
+    # conn, cursor = sf_connect(
+    #     username=username, password=password, account=account, warehouse=warehouse)
+    # try:
+    #     if file_type.lower() in ["yml", "py"]:
+    #         sys.exit(0)
+    #     else:
+    #         print(f"Branch name: {branch}")
+    #         print(f"{file_name} has been changed")
+    #         query = ""
+    #         with open(file_name, "r") as f:
+    #             query = ''.join(line.rstrip() for line in f)
+    #         query = query.replace("$env", branch_replacement[branch]).upper()
+    #         print(query)
+    #         cursor.execute(query)
+    #         for x in cursor.fetchall():
+    #             print(x)
+    # except Exception as e:
+    #     raise Exception(f"Exception occured while executing the query:\n{e}")
+    # finally:
+    #     cursor.close()
+    #     conn.close()
