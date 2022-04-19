@@ -66,7 +66,7 @@ if __name__ == "__main__":
     print(password)
     print(account)
     print(warehouse)
-    print(os.getenv('RUNNER_NAME'))
+    print(os.getenv('GITHUB_ACTOR'))
     print(os.getenv('GITHUB_SHA'))
 
     # branch_replacement = {"dev": "dev", "uat": "uat", "main": "prod"}
