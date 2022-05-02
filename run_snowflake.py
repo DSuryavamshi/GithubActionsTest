@@ -6,6 +6,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric import dsa
 from cryptography.hazmat.primitives import serialization
 import base64
+import json
 
 def decode64(encoded_str):
     base64_bytes = encoded_str.encode("ascii")
