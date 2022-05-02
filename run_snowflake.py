@@ -84,6 +84,7 @@ if __name__ == "__main__":
 
     print(username)
     print(type(username))
+    print(type(username))
 
     # branch_replacement = {"dev": "dev", "uat": "uat", "main": "prod"}
     # file_type = file_name.split(".")[1]
