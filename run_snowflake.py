@@ -1,20 +1,46 @@
 import sys
 import os
 import snowflake.connector as sf
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives.asymmetric import dsa
+from cryptography.hazmat.primitives import serialization
 
 
-def sf_connect(username, password, account, warehouse):
+ctx = snowflake.connector.connect(
+    user="<user>",
+    account="<account_identifier>",
+    private_key=pkb,
+    warehouse=WAREHOUSE,
+    database=DATABASE,
+    schema=SCHEMA,
+)
+
+cs = ctx.cursor()
+
+
+def sf_connect(username, private_key, passphrase, account, warehouse):
     try:
+        p_key = serialization.load_pem_private_key(
+            private_key,
+            password=passphrase.encode(),
+            backend=default_backend(),
+        )
+
+        pkb = p_key.private_bytes(
+            encoding=serialization.Encoding.DER,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.NoEncryption(),
+        )
+
         conn = sf.connect(
-            user=username,
-            password=password,
-            account=account,
-            warehouse=warehouse,
+            user=username, private_key=pkb, account=account, warehouse=warehouse,
         )
         return conn, conn.cursor()
     except Exception as e:
         raise Exception(
-            f"Exception occured whlie establishing connection to snowflake:\n{e}")
+            f"Exception occured whlie establishing connection to snowflake:\n{e}"
+        )
 
 
 def check_log_table(cursor):
@@ -26,76 +52,76 @@ def check_log_table(cursor):
         return create_log_table(cursor)
 
 
-def log_table(cursor, file_name, sha, actor):
+def log_table(cursor, file_name, sha, actor, file_action):
     if check_log_table(cursor=cursor):
         query = f"select file_name, count(*) from db.schema.log_table where file_name = '{file_name}' group by 1"
         cursor.execute(query)
         if cursor.fetchone()[1] > 1:
-            raise Exception(
-                f"Error in log table, duplicate entry for {file_name}")
+            raise Exception(f"Error in log table, duplicate entry for {file_name}")
         elif cursor.fetchone()[1] == 1:
-            query = f"update db.schema.log_table set update_datetime = current_datetime, commit_user = '{actor}', commit_sha = '{sha}' where file_name = '{file_name}'"
+            query = f"update db.schema.log_table set update_datetime = current_datetime, commit_user = '{actor}', commit_sha = '{sha}', file_action = '{file_action}' where file_name = '{file_name}'"
             cursor.execute(query)
         else:
-            query = f"insert into db.schema.log_table (file_name, created_datetime, update_datetime, commit_user, commit_sha ) values ('{file_name}', current_timestamp, current_timestamp, '{actor}', '{sha}')"
+            query = f"insert into db.schema.log_table (file_name, created_datetime, update_datetime, commit_user, commit_sha, file_action ) values ('{file_name}', current_timestamp, current_timestamp, '{actor}', '{sha}', '{file_action}')"
             cursor.execute(query)
     else:
         raise Exception(f"log table not available. Please create log table.")
 
 
 def create_log_table(cursor):
-    query = "create table db.schema.log_table(file_name varchar, created_datetime datetime, update_datetime datetime, commit_user varchar, commit_sha varchar)"
+    query = "create table db.schema.log_table(file_name varchar, created_datetime timestamp_ntz, update_datetime timestamp_ntz, commit_user varchar, commit_sha varchar, file_action varchar)"
     cursor.execute(query)
     return True
 
 
 if __name__ == "__main__":
-    # file_name = sys.argv[1]
-    # branch = sys.argv[2]
-    # username = sys.argv[3]
-    # password = sys.argv[4]
-    # account = sys.argv[5]
-    # warehouse = sys.argv[6]
-    # actor = os.getenv('GITHUB_ACTOR')
-    # sha = os.getenv('GITHUB_SHA')
+    file_name = sys.argv[1]
+    branch = sys.argv[2]
+    username = sys.argv[3]
+    dev_ppk = sys.argv[4]
+    uat_ppk = sys.argv[5]
+    passphrase = sys.argv[6]
+    account = sys.argv[7]
+    warehouse = sys.argv[8]
+    file_action = sys.argv[9]
+    actor = os.getenv("GITHUB_ACTOR")
+    sha = os.getenv("GITHUB_SHA")
 
-    added = sys.argv[1]
-    removed = sys.argv[2]
-    modified = sys.argv[3]
-
-    print(added)
-    print(type(added))
-    print(removed)
-    print(type(removed))
-    print(modified)
-    print(type(modified))
-    # print(file_name)
-    # print(branch)
-    # print(username)
-    # print(password)
-    # print(account)
-    # print(warehouse)
-
-    # branch_replacement = {"dev": "dev", "uat": "uat", "main": "prod"}
-    # file_type = file_name.split(".")[1]
-    # conn, cursor = sf_connect(
-    #     username=username, password=password, account=account, warehouse=warehouse)
-    # try:
-    #     if file_type.lower() in ["yml", "py"]:
-    #         sys.exit(0)
-    #     else:
-    #         print(f"Branch name: {branch}")
-    #         print(f"{file_name} has been changed")
-    #         query = ""
-    #         with open(file_name, "r") as f:
-    #             query = ''.join(line.rstrip() for line in f)
-    #         query = query.replace("$env", branch_replacement[branch]).upper()
-    #         print(query)
-    #         cursor.execute(query)
-    #         for x in cursor.fetchall():
-    #             print(x)
-    # except Exception as e:
-    #     raise Exception(f"Exception occured while executing the query:\n{e}")
-    # finally:
-    #     cursor.close()
-    #     conn.close()
+    branch_replacement = {"dev": "dev", "uat": "uat", "main": "prod"}
+    file_type = file_name.split(".")[1]
+    ppk_key = ''
+    if branch_replacement[branch] == 'dev':
+        ppk_key = dev_ppk
+    elif branch_replacement[branch] == 'uat':
+        ppk_key = uat_ppk
+    conn, cursor = sf_connect(
+        username=username[branch_replacement[branch]], passphrase=passphrase[branch_replacement[branch]], private_key=ppk_key, account=account, warehouse=warehouse
+    )
+    try:
+        if file_type.lower() in ["yml", "py"]:
+            sys.exit(0)
+        else:
+            print(f"Branch name: {branch}")
+            print(f"{file_name} has been changed")
+            query = ""
+            with open(file_name, "r") as f:
+                queries = "".join(line.rstrip() for line in f)
+                if ";" in queries:
+                    for query in queries.split(";"):
+                        query = query.replace(
+                            "$env", branch_replacement[branch]
+                        ).upper()
+                        print(query)
+                        cursor.execute(query)
+                        for x in cursor.fetchall():
+                            print(x)
+            query = query.replace("$env", branch_replacement[branch]).upper()
+            print(query)
+            cursor.execute(query)
+            for x in cursor.fetchall():
+                print(x)
+    except Exception as e:
+        raise Exception(f"Exception occured while executing the query:\n{e}")
+    finally:
+        cursor.close()
+        conn.close()
