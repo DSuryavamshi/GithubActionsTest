@@ -81,43 +81,46 @@ if __name__ == "__main__":
     actor = os.getenv("GITHUB_ACTOR")
     sha = os.getenv("GITHUB_SHA")
 
-    branch_replacement = {"dev": "dev", "uat": "uat", "main": "prod"}
-    file_type = file_name.split(".")[1]
-    ppk_key = ''
-    if branch_replacement[branch] == 'dev':
-        ppk_key = dev_ppk
-        passphrase = dev_passphrase
-    elif branch_replacement[branch] == 'uat':
-        ppk_key = uat_ppk
-        passphrase = uat_passphrase
-    conn, cursor = sf_connect(
-        username=username[branch_replacement[branch]], passphrase=passphrase, private_key=ppk_key, account=account, warehouse=warehouse
-    )
-    try:
-        if file_type.lower() in ["yml", "py"]:
-            sys.exit(0)
-        else:
-            print(f"Branch name: {branch}")
-            print(f"{file_name} has been changed")
-            query = ""
-            with open(file_name, "r") as f:
-                queries = "".join(line.rstrip() for line in f)
-                if ";" in queries:
-                    for query in queries.split(";"):
-                        query = query.replace(
-                            "$env", branch_replacement[branch]
-                        ).upper()
-                        print(query)
-                        cursor.execute(query)
-                        for x in cursor.fetchall():
-                            print(x)
-            query = query.replace("$env", branch_replacement[branch]).upper()
-            print(query)
-            cursor.execute(query)
-            for x in cursor.fetchall():
-                print(x)
-    except Exception as e:
-        raise Exception(f"Exception occured while executing the query:\n{e}")
-    finally:
-        cursor.close()
-        conn.close()
+    print(username)
+    print(type(username))
+
+    # branch_replacement = {"dev": "dev", "uat": "uat", "main": "prod"}
+    # file_type = file_name.split(".")[1]
+    # ppk_key = ''
+    # if branch_replacement[branch] == 'dev':
+    #     ppk_key = dev_ppk
+    #     passphrase = dev_passphrase
+    # elif branch_replacement[branch] == 'uat':
+    #     ppk_key = uat_ppk
+    #     passphrase = uat_passphrase
+    # conn, cursor = sf_connect(
+    #     username=json.loads(username)[branch_replacement[branch]], passphrase=passphrase, private_key=ppk_key, account=account, warehouse=warehouse
+    # )
+    # try:
+    #     if file_type.lower() in ["yml", "py"]:
+    #         sys.exit(0)
+    #     else:
+    #         print(f"Branch name: {branch}")
+    #         print(f"{file_name} has been changed")
+    #         query = ""
+    #         with open(file_name, "r") as f:
+    #             queries = "".join(line.rstrip() for line in f)
+    #             if ";" in queries:
+    #                 for query in queries.split(";"):
+    #                     query = query.replace(
+    #                         "$env", branch_replacement[branch]
+    #                     ).upper()
+    #                     print(query)
+    #                     cursor.execute(query)
+    #                     for x in cursor.fetchall():
+    #                         print(x)
+    #         query = query.replace("$env", branch_replacement[branch]).upper()
+    #         print(query)
+    #         cursor.execute(query)
+    #         for x in cursor.fetchall():
+    #             print(x)
+    # except Exception as e:
+    #     raise Exception(f"Exception occured while executing the query:\n{e}")
+    # finally:
+    #     cursor.close()
+    #     conn.close()
