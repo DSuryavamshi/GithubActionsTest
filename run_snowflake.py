@@ -7,15 +7,16 @@ from cryptography.hazmat.primitives.asymmetric import dsa
 from cryptography.hazmat.primitives import serialization
 import base64
 
+def decode64(encoded_str):
+    base64_bytes = encoded_str.encode("ascii")
+    decoded_bytes = base64.b64decode(base64_bytes)
+    return decoded_bytes.decode("ascii")
+
 def sf_connect(username, private_key, passphrase, account, warehouse):
     try:
-        base64_bytes = private_key.encode("ascii")
-        decoded_bytes = base64.b64decode(base64_bytes)
-        ppk_file = decoded_bytes.decode("ascii")
-
         p_key = serialization.load_pem_private_key(
-            ppk_file,
-            password=passphrase.encode(),
+            decode64(private_key),
+            password=decode64(passphrase).encode(),
             backend=default_backend(),
         )
 
@@ -72,10 +73,11 @@ if __name__ == "__main__":
     username = sys.argv[3]
     dev_ppk = sys.argv[4]
     uat_ppk = sys.argv[5]
-    passphrase = sys.argv[6]
-    account = sys.argv[7]
-    warehouse = sys.argv[8]
-    # file_action = sys.argv[9]
+    dev_passphrase = sys.argv[6]
+    uat_passphrase = sys.argv[7]
+    account = sys.argv[8]
+    warehouse = sys.argv[9]
+    file_action = sys.argv[10]
     actor = os.getenv("GITHUB_ACTOR")
     sha = os.getenv("GITHUB_SHA")
 
@@ -84,10 +86,12 @@ if __name__ == "__main__":
     ppk_key = ''
     if branch_replacement[branch] == 'dev':
         ppk_key = dev_ppk
+        passphrase = dev_passphrase
     elif branch_replacement[branch] == 'uat':
         ppk_key = uat_ppk
+        passphrase = uat_passphrase
     conn, cursor = sf_connect(
-        username=username[branch_replacement[branch]], passphrase=passphrase[branch_replacement[branch]], private_key=ppk_key, account=account, warehouse=warehouse
+        username=username[branch_replacement[branch]], passphrase=passphrase, private_key=ppk_key, account=account, warehouse=warehouse
     )
     try:
         if file_type.lower() in ["yml", "py"]:
