@@ -6,19 +6,6 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric import dsa
 from cryptography.hazmat.primitives import serialization
 
-
-ctx = snowflake.connector.connect(
-    user="<user>",
-    account="<account_identifier>",
-    private_key=pkb,
-    warehouse=WAREHOUSE,
-    database=DATABASE,
-    schema=SCHEMA,
-)
-
-cs = ctx.cursor()
-
-
 def sf_connect(username, private_key, passphrase, account, warehouse):
     try:
         p_key = serialization.load_pem_private_key(

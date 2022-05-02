@@ -28,11 +28,9 @@ jobs:
         run: |
           for changed_file in ${{ steps.files.outputs.added }}; do
             python run_snowflake.py ${changed_file} ${{ steps.extract_branch.outputs.branch }} ${{ secrets.SF_USERNAME }} ${{ secrets.SVC_CICD_DEV }} ${{ secrets.SVC_CICD_UAT }} ${{ secrets.CICD_USER_PASSPHRASE }} ${{ secrets.SF_ACCT }} ${{ secrets.SF_WAREHOUSE}} "added"
-            # python run_snowflake.py always_running_files
           done
       - name: Deploying updated Snowflake objects
         run: |
           for changed_file in ${{ steps.files.outputs.updated }}; do
             python run_snowflake.py ${changed_file} ${{ steps.extract_branch.outputs.branch }} ${{ secrets.SF_USERNAME }} ${{ secrets.SVC_CICD_DEV }} ${{ secrets.SVC_CICD_UAT }} ${{ secrets.CICD_USER_PASSPHRASE }} ${{ secrets.SF_ACCT }} ${{ secrets.SF_WAREHOUSE}} "updated"
-            # python run_snowflake.py always_running_files
           done
