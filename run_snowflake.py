@@ -75,7 +75,7 @@ if __name__ == "__main__":
     passphrase = sys.argv[6]
     account = sys.argv[7]
     warehouse = sys.argv[8]
-    file_action = sys.argv[9]
+    # file_action = sys.argv[9]
     actor = os.getenv("GITHUB_ACTOR")
     sha = os.getenv("GITHUB_SHA")
 
