@@ -5,11 +5,16 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric import dsa
 from cryptography.hazmat.primitives import serialization
+import base64
 
 def sf_connect(username, private_key, passphrase, account, warehouse):
     try:
+        base64_bytes = private_key.encode("ascii")
+        decoded_bytes = base64.b64decode(base64_bytes)
+        ppk_file = decoded_bytes.decode("ascii")
+
         p_key = serialization.load_pem_private_key(
-            private_key,
+            ppk_file,
             password=passphrase.encode(),
             backend=default_backend(),
         )
